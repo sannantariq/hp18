@@ -12,7 +12,7 @@ var text = [
 	"What should we have for dinner?",
 	"Burger?",
 	"Sure.",
-	"Btw, Pittsburgh to Princeton costs $200.",
+	"Pittsburgh to Princeton costs $200.",
 	"Thats, way too expensive!!",
 	"Lets, do greyhound then."
 ]
@@ -44,20 +44,13 @@ function kl(a, b){
 }
 function sum(a, m1, b, m2){
 	var sum = {};
-	for(var e1 in a){
-		var p = a[e1];
-		var q = 0;
-		if (e1 in b){
-			q = b[e1]			
-		}
-		sum[e1] = p*m1 + q*m2;
-	}
-	for(var e2 in b){
-		var q = a[e2];
-		if (!(e2 in b)){
-			sum[e2] = q*m2;
-		}		
-	}
+	var keys = []
+	for(var k in a) keys.push(k);	
+	for(var k in b) keys.push(k);	
+	for (var k of keys){
+		if (k in a) sum[k] = m1 * ((sum[k] || 0) + a[k]);		
+		if (k in b) sum[k] = m2 * ((sum[k] || 0) + b[k]);
+	}	
 	return sum;
 }
 function jensen_shannon(a, b){
@@ -65,7 +58,7 @@ function jensen_shannon(a, b){
 	// console.log(a);
 	// console.log(b);
 	// console.log(M);
-	return 0.5 * kl(a, M) + kl(b, M)
+	return 0.5 * (kl(a, M) + kl(b, M))
 }
 
 function klAll(arr, b){
@@ -77,9 +70,10 @@ function klAll(arr, b){
 }
 
 function jsAll(arr, b){
+	// console.log(arr);
 	var div = [];
-	for (var a in arr){
-		div.push(jensen_shannon(a,b))
+	for (var i=0; i<arr.length; i++){
+		div.push(jensen_shannon(arr[i],b))
 	}
 	return b;
 }
@@ -170,8 +164,8 @@ function process_stream(msg){
 			for (var t of topic_dists){				
 				divs.push(jensen_shannon(dist, t));
 			}
-			divs[prev_topic] *= 1/1.001;
-			console.log(divs);			
+			// divs[prev_topic] *= 1/1.001;
+			// console.log(divs);			
 			// divs = softmin(divs);
 			var mins = argmin(divs);
 			var min_idx = mins[1];
@@ -202,6 +196,9 @@ for(var i=0; i<text.length; i++){
 	console.log(process_stream(msg));
 }
 
+// var d1 = {greyhound: 0.24, expensive: 0.23, princeton: 0.13};
+// var d2 = {fine: 0.34, dinner: 0.33, air: 0.33};
+// console.log(jensen_shannon(d2,d2));
 
 // Run LDA to get terms for 2 topics (5 terms each).
 // var result = process(documents, 2, 5);
