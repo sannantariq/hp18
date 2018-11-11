@@ -1,34 +1,3 @@
-var text = [
-    "hi",
-    "hi",
-    "How do we go to princeton?",
-    "We should take greyhound.",
-    "No, I say we go by air.",
-    "Ok, fine.",
-    "What should we have for dinner?",
-    "Burger?",
-    "Sure.",
-    "Btw, Pittsburgh to Princeton costs $200.",
-    "Thats, way too expensive!!",
-    "Lets, do greyhound then."
-]
-
-sentence2colors = {
-
-    "Hey Guys":0,
-    "Are you free on November 9-11?":1,
-    "Let's do a hackathon at Princeton":1,
-    "I'm not doing a hackathon with you, it always turns into a disaster.":1,
-    "Guys, are you on campus? Wanna have dinner?": 2,
-    "Also, I'm up for the hackathon, but not if we'll be spending half of the hacking time coming up with what to make..":1,
-    "I just left campus, I am having dinner with friends.":2,
-    "Are we not friends?":3,
-    "I have a couple of ideas on what to make":1,
-    "I'm on campus but I already ate.":3,
-    "So do you wanna join us?":2,
-    "I just got out of an exam, what are you talking about?":4
-}
-
 var context_win = 3;
 var topic_dists = []
 var prev_topic = 0;
@@ -40,9 +9,6 @@ var context2colors = {0: "#44BEC7", 1: "#FFC300", 2: "#FA3C4C", 3: "#D696BB", 4:
 
 var curr_contexts = new Set();
 var context2keywords = {};
-
-food = ['eat', 'food', 'khaana', 'cook', 'outside', 'restaurant', 'popcorn', 'oranges'];
-hackathon = ['program', 'code', 'hackathon', 'hack', 'projects'];
 
 function kl(a, b){
     var div = 0;
@@ -237,31 +203,6 @@ function process_stream(msg){
 This function will be used to create buttons for contexts
  */
 
-function addButton(context) {
-    var btn = document.createElement("BUTTON");
-    var t = document.createTextNode(context);
-    btn.appendChild(t);
-    document.body.appendChild(btn);
-}
-
-
-function getCluster(max) {
-    return [Math.floor(Math.random() * Math.floor(max)), "hello"];
-}
-
-function getProperColor(text){
-    var txtSplit = text.split(" ");
-    var intersectionFood = txtSplit.filter(x => food.includes(x));
-    var intersectionHack = txtSplit.filter(x => hackathon.includes(x));
-    //console.log(intersectionFood);
-    //console.log(intersectionHack);
-    if (intersectionFood === undefined || intersectionFood.length == 0) {
-	return "#AA3939";
-    }
-    else
-	return "red";
-}
-
 function changeDivColor(divMessageElement){
     //console.log(divMessageElement);
     divMessageElementChild = divMessageElement.childNodes[0];
@@ -273,19 +214,9 @@ function changeDivColor(divMessageElement){
     clusterLst = process_stream(text); //getCluster(21);
     cluster = clusterLst[0];
     keyword = clusterLst[1];
-    /*
-    if(curr_context.has(keyword)){
-        addButton(keyword);
-    }*/
     curr_contexts.add(keyword);
-    //console.log(cluster);
-    //console.log(keyword);
-    assignedColor = context2colors[sentence2colors[text]]
-    console.log(assignedColor);
-    console.log(text);
-    //assignedColor = context2colors[cluster];
-    //console.log(assignedColor)
-    divMessageElementChild.style.backgroundColor = assignedColor;//context2colors[cluster];
+    assignedColor = context2colors[cluster];
+    divMessageElementChild.style.backgroundColor = context2colors[cluster];
 }
 
 setTimeout(startObserver, 5000);
@@ -338,17 +269,3 @@ function startObserver () {
     last_msg_observer.observe(last_message_target, config);
     observer.observe(target, config);
 };
-
-/*
-This function will stream messages. For now it reads the
-html page after every 2 seconds.
-*/
-/*
-setTimeout(function(){
-	messages1 = document.querySelectorAll("._clearfix,._o46,._3erg,._29_7,.direction_ltr,.text_align_ltr");
-	for(var i=0; i < messages1.length; i++){
-	    message = messages1[i];
-	    changeDivColor(message);
-	    }
-    }, 5000)
-    */
