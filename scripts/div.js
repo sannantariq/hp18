@@ -5,6 +5,7 @@
   **/
   this.topic_distribution = [{"fox" : {"fox" : 0.16, "hunt": 0.12}, {"parrot" : {"fly": 0.11, "you":0.02}}] 
   this.threshold = 0.0001;
+  this.new_threshold = 0.4;
 
   this.pickMinDivergence(divergences){
       var index_min_divergence = [];
@@ -42,7 +43,16 @@
 
       min_divergences = pickMinDivergence(divergences);
       index_min_divergence , min_divergence = min_divergences[0], min_divergences[1];
-      
+
+      var choosen_topic_index = 0;
+      var min_div = Number.MAX_VALUE;
+      for (var i; i<thisSentenceDistributions.length; i++){
+          if (min_divergence[i] < min_div){
+              min_div = min_divergence[i];
+              choosen_topic_index = index_min_divergence[i];
+          }
+      }
+      return choosen_topic_index;
   }
 
 // // var text = 'Cats are small. Dogs are big. Cats like to chase mice. Dogs like to eat bones.';
