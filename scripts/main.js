@@ -24,8 +24,9 @@ var text = [
 // 	"Dogs like to eat bones."
 // ]
 
-context_win = 3;
-topic_dists = []
+var context_win = 3;
+var topic_dists = []
+var prev_topic = 0;
 var messages = new Array();
 
 function kl(a, b){
@@ -74,6 +75,15 @@ function klAll(arr, b){
 	}
 	return b;
 }
+
+function jsAll(arr, b){
+	var div = [];
+	for (var a in arr){
+		div.push(jensen_shannon(a,b))
+	}
+	return b;
+}
+
 function argmin(a){
 	var min = Number.MAX_VALUE;
 	var idx = -1;
@@ -87,37 +97,103 @@ function argmin(a){
 	return [min, idx];
 }
 
+function argmax(a){
+	var max = Number.MIN_VALUE;
+	var idx = -1;
+
+	for (var i=0; i < a.length; i++){
+		if (a[i] > max){
+			max = a[i];
+			idx = i;
+		}		
+	}
+	return [max, idx];
+}
+
+
+function softmin(arr, scale_idx, scale_factor) {
+	var exp = [];
+	var sm = [];
+	var sum = 0;
+	for (var v of arr){
+		console.log(v);
+		var e = Math.exp(-1 * v);
+		exp.push(e);
+		sum += e;
+	}
+	for (var i=0; i<exp.length; i++){
+		if (scale_idx){
+			if (i === scale_idx) sm.push(scale_factor * exp[i]/sum);
+			else sm.push((1-scale_factor)/(exp.length-1) * exp[i]/sum);
+		}
+		else sm.push(exp[i]/sum);
+	}
+	return sm;
+}
+
+function rest_state() {
+	context_win = 3;
+	topic_dists = []
+	prev_topic = 0;
+	messages = new Array();
+}
 
 function process_stream(msg){
+	// if(msg.split(" ").length < 3) return -1;
 	messages.push(msg);
 	if (messages.length >= context_win){
 		ctx = messages.join('.');
 		console.log(ctx);
 		var result = process(messages, 2, 3);
-		// console.log(result);	
+		console.log(result);	
 		messages.shift();
 		// console.log(sum(result[0],1,result[1],1))
-		// console.log(topic_dists);
+		console.log(topic_dists);
+		var div0 = jsAll(topic_dists, result[0])
+		var div1 = jsAll(topic_dists, result[1])
+		var min_div0 = argmin(div0)[0];
+		var min_div1 = argmin(div1)[0];
+		var dist;
+		
+		if (min_div0 < min_div1) dist = result[0];
+		else dist = result[1];
+
+		// dist = result[0];
+
 		if (topic_dists.length === 0) {
-			topic_dists.push(result[0]);
+			topic_dists.push(dist);
+			prev_topic = 0;
 			return 0;
 		}
 		else{
 			var divs = [];
 			for (var t of topic_dists){				
-				divs.push(jensen_shannon(result[0], t));
+				divs.push(jensen_shannon(dist, t));
 			}
+			divs[prev_topic] *= 1/1.001;
+			console.log(divs);			
+			// divs = softmin(divs);
 			var mins = argmin(divs);
 			var min_idx = mins[1];
 			var min_div = mins[0];
+			// var maxs = argmax(divs);
+
 			console.log("min_div:" + min_div + " min_idx:"+min_idx)
+			// console.log(softmin(divs));
 			if (min_div > 0.34){
-				topic_dists.push(result[0])
+				topic_dists.push(dist)
+				prev_topic = topic_dists.length - 1;
 				return topic_dists.length - 1;
 			}
-			return min_idx;
+			else{
+				sum(topic_dists[min_idx], 0.75, dist, 0.25);
+				prev_topic = min_idx;
+				return min_idx;
+			}			
 		}
-		// break;
+	}
+	else{
+		return -1;
 	}
 }
 
