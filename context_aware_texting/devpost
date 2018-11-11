@@ -1,0 +1,36 @@
+Inspiration
+
+We all loving messaging apps: Messenger, WhatsApp, VChat, etc. While some of us like to stay on topic, it is hard and almost all of us derail conversations by introducing new subjects in group chats. Consider the following examples:
+
+But what if your app could understand the context of each message, and mark it for you? With the recent advancements in NLP and deep learning, learning semantic representations of language are more than possible. This inspired us to create CAT -- short for "context-aware texting". 
+
+What it does
+
+As the users progress through their chats, 
+
+What it does
+CAT is a chrome-extension 
+The user can upload their own dataset (currently in .csv file format), and we then take them to an easy-to-use interface where they can converse with AIDAN. As an example, the user might ask AIDAN to "fit a best-fit line for house price and number of bedrooms". AIDAN has a friendly conversation with them, and then processes the request and displays the regression equation and plot to the right of the chat window. As they continue to converse with AIDAN, the plots and statistics they request appear on the right in a dynamic, notebook-like format.
+
+AIDAN supports a lot of functionality, including one and two-variable statistics, data visualization, and machine learning. In addition, we allow the user to converse with AIDAN using either text or their voice, as well as the ability to interact with the plots (zoom in, hover, etc.) and export them in standard image formats. We have also built in contextual understanding for the voice option, such that we can still understand the intent of the user even if speech recognition does not interpret the user entirely correctly.
+
+How we built it
+We built the chatbot using Amazon Lex, such that we could integrate the conversational interface into our web application (Lex is powered by the same deep learning as Alexa). We added several "intents" (what the user wants to do) to the chatbot and added prompts and confirmations to create a smooth conversation workflow. We integrated the chatbot into HTML using Lex's Javascript SDK and wrote Javascript code to add both voice and text functionality to AIDAN. We used Lex's PostText and PostContent APIs to combine both voice and text and extract AIDAN's responses dynamically as he converses with the user.
+
+We built the frontend using React.js and integrated the chatbot into our frontend. For the data analysis, we wrote the data visualization functionality using plotly.js and the machine learning capabilities using mljs.
+
+Challenges we ran into
+One of our biggest challenges was figuring out the architecture of our project. We initially planned to run the data analysis on a Python server that would communicate with the React frontend. After several hours trying to get the two to "talk" to each other, we realized that doing the data analysis in Javascript itself (since it has plenty of useful libraries) would be more practical. Even so, bring together all the moving parts of our project (the AWS Chatbot, the React frontend, and the data analysis) was a significant challenge.
+
+Accomplishments that we're proud of
+Integrating both voice and text capabilities into the chatbot was quite challenging, since they require different APIs, and we're proud of being able to support both. We were also happy that we were able to create a wide range of functionality for AIDAN, from plotting to ML, while still keeping a relatively friendly, conversational flow.
+
+And of course, actually talking with AIDAN and seeing the whole project come to life was also a pretty awesome moment.
+
+What we learned
+On the technical side, we learned a lot about AWS (since none of our group members had previous experience), designing chatbots, and working with React. We also learned how to effectively parallelize work, push through frustrating bugs, and how to adapt and make practical decisions about the direction and architecture of the project.
+
+What's next for A.I.D.A.N.— A.I. and Data Analysis, "Now!"
+We're super excited about the future of AIDAN, since there's so many ways to expand on what we've done. We'd first look to increase AIDAN's capabilities, adding more advanced data visualization and machine learning functionality. In addition, we would expand to different file formats, as well as possibly offer data 'arenas' that are personalized to specific fields (e.g. biology, social sciences). There's a lot we can see ourselves doing.
+
+Built With

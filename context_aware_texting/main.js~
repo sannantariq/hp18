@@ -1,0 +1,125 @@
+
+var context2colors = {0: "#AA3939", 1: "#AA6C39", 2: "#2D882D", 3: "#226666", 4: "#582A72", 5: "#AA9739", 6: "#255C69", 7: "#759D34", 8: "#2C4770", 9: "#246D5F",
+		      10:"#F05886", 11:"#727193", 12:"#FF8C5E", 13:"#4DD299", 14:"#FA5C6B", 15:"#4C4F3E", 16:"#372B36", 17:"#07074C", 18:"#6D0000",19: "#032946",
+		      20:"#6C6D00"};
+
+var curr_contexts = new Set();
+var context2keywords = {};
+
+food = ['eat', 'food', 'khaana', 'cook', 'outside', 'restaurant', 'popcorn', 'oranges'];
+hackathon = ['program', 'code', 'hackathon', 'hack', 'projects'];
+
+/*
+This function will be used to create buttons for contexts
+ */
+
+function addButton(context) {
+    var btn = document.createElement("BUTTON");
+    var t = document.createTextNode(context);
+    btn.appendChild(t);
+    document.body.appendChild(btn);
+}
+
+
+function getCluster(max) {
+    return [Math.floor(Math.random() * Math.floor(max)), "hello"];
+}
+
+function getProperColor(text){
+    var txtSplit = text.split(" ");
+    var intersectionFood = txtSplit.filter(x => food.includes(x));
+    var intersectionHack = txtSplit.filter(x => hackathon.includes(x));
+    //console.log(intersectionFood);
+    //console.log(intersectionHack);
+    if (intersectionFood === undefined || intersectionFood.length == 0) {
+	return "#AA3939";
+    }
+    else
+	return "red";
+}
+
+function changeDivColor(divMessageElement){
+    //console.log(divMessageElement);
+    divMessageElementChild = divMessageElement.childNodes[0];
+    aok = divMessageElementChild.getElementsByClassName('_aok')[0];
+    aok.style.color="white";
+    text = aok.querySelectorAll('._30h-,._58nk')[0].innerHTML;
+    //console.log(text);
+    //cluster = getClusterId(text);
+    clusterLst = getCluster(21);
+    cluster = clusterLst[0];
+    keyword = clusterLst[1];
+    
+    //console.log(keyword);
+    assignedColor = context2colors[cluster];
+    //console.log(assignedColor)
+    divMessageElementChild.style.backgroundColor = context2colors[cluster];
+
+}
+
+setTimeout(startObserver, 5000);
+var data = [];
+
+function bigSubscriber(mutations) {
+    var prev_observer = null;
+    var first_mutation = mutations[0];
+    var new_node = first_mutation.addedNodes[0].getElementsByClassName('_41ud')[0];
+    var new_node_header = new_node.getElementsByClassName('_ih3')[0];
+    var new_node_messages = new_node.querySelectorAll('.clearfix,._o46,._3erg,._29_7,.direction_ltr,.text_align_ltr');
+    latest_message = new_node_messages[new_node_messages.length - 1];
+    data.push(latest_message);
+
+    if (prev_observer != null) {
+        prev_observer.disconnect();
+    }
+    prev_observer = new MutationObserver(smallSubscriber);
+    var config = {childList: true};
+    prev_observer.observe(new_node, config);
+    changeDivColor(latest_message);
+}
+
+function smallSubscriber(mutations) {
+    parent = mutations[0].target;
+    var new_node_messages = parent.querySelectorAll('.clearfix,._o46,._3erg,._29_7,.direction_ltr,.text_align_ltr')
+    latest_message = new_node_messages[new_node_messages.length - 1];
+    data.push(latest_message);
+    changeDivColor(latest_message);
+}
+ 
+// pass in the target node, as well as the observer options
+function startObserver () {
+    // select the target node
+
+    var target = document.querySelector('#js_1');
+    //console.log(target)
+    // var messages = target.getElementsByClassName('_1t_p clearfix')
+    // console.log(messages)
+
+    var observer = new MutationObserver(bigSubscriber);
+    var last_message_target = target.getElementsByClassName('_41ud');
+    last_message_target = last_message_target[last_message_target.length - 1];
+    
+    
+    // configuration of the observer:
+    var config = {childList: true};
+    last_msg_observer = new MutationObserver(smallSubscriber);
+
+    last_msg_observer.observe(last_message_target, config);
+    observer.observe(target, config);
+};
+
+
+/*
+This function will stream messages. For now it reads the
+html page after every 2 seconds.
+*/
+/*
+setInterval(function(){
+	messages = document.querySelectorAll("._clearfix,._o46,._3erg,._29_7,.direction_ltr,.text_align_ltr");
+	for(var i=0; i < messages.length; i++){
+	    message = messages[i];
+	    changeDivColor(message);
+	    }
+    }, 2000)
+
+*/
