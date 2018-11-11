@@ -3,7 +3,7 @@ var topic_dists = []
 var prev_topic = 0;
 var messages = new Array();
 
-var context2colors = {0: "#44BEC7", 1: "#FFC300", 2: "#FA3C4C", 3: "#D696BB", 4: "#6699CC", 5: "#13CF13", 6: "#FF7E29", 7: "#E68585", 8: "#7646FF", 9: "#20CEF5",
+var context2colors = {-1: "#44BEC7", 0: "#44BEC7", 1: "#FFC300", 2: "#FA3C4C", 3: "#D696BB", 4: "#6699CC", 5: "#13CF13", 6: "#FF7E29", 7: "#E68585", 8: "#7646FF", 9: "#20CEF5",
 		      10:"#67B868", 11:"#D4A88C", 12:"#FF5CA1", 13:"#A69FC7", 14:"#FA5C6B", 15:"#4C4F3E", 16:"#372B36", 17:"#07074C", 18:"#6D0000",19: "#032946",
 		      20:"#6C6D00"};
 
