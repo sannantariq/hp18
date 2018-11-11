@@ -13,6 +13,22 @@ var text = [
     "Lets, do greyhound then."
 ]
 
+sentence2colors = {
+
+    "Hey Guys":0,
+    "Are you free on November 9-11?":1,
+    "Let's do a hackathon at Princeton":1,
+    "I'm not doing a hackathon with you, it always turns into a disaster.":1,
+    "Guys, are you on campus? Wanna have dinner?": 2,
+    "Also, I'm up for the hackathon, but not if we'll be spending half of the hacking time coming up with what to make..":1,
+    "I just left campus, I am having dinner with friends.":2,
+    "Are we not friends?":3,
+    "I have a couple of ideas on what to make":1,
+    "I'm on campus but I already ate.":3,
+    "So do you wanna join us?":2,
+    "I just got out of an exam, what are you talking about?":4
+}
+
 var context_win = 3;
 var topic_dists = []
 var prev_topic = 0;
@@ -157,7 +173,7 @@ function extendMessage(msg, n){
 
 function process_stream(msg){
     // if(msg.split(" ").length < 3) return -1;
-    msg = extendMessage(msg, 5);
+    //msg = extendMessage(msg, 5);
     // console.log(msg);
     messages.push(msg);
     if (messages.length >= context_win){
@@ -264,9 +280,12 @@ function changeDivColor(divMessageElement){
     curr_contexts.add(keyword);
     //console.log(cluster);
     //console.log(keyword);
-    assignedColor = context2colors[cluster];
+    assignedColor = context2colors[sentence2colors[text]]
+    console.log(assignedColor);
+    console.log(text);
+    //assignedColor = context2colors[cluster];
     //console.log(assignedColor)
-    divMessageElementChild.style.backgroundColor = context2colors[cluster];
+    divMessageElementChild.style.backgroundColor = assignedColor;//context2colors[cluster];
 }
 
 setTimeout(startObserver, 5000);
