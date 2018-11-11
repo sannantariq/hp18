@@ -42,9 +42,10 @@ var text = [
 
 context_win = 3;
 topic_dists = []
-var messages = []
-for(var i=0; i<text.length; i++){
-	msg = text[i];
+var messages = new Array();
+
+
+function process_stream(msg){
 	messages.push(msg);
 	if (messages.length >= context_win){
 		ctx = messages.join('.');
@@ -56,6 +57,13 @@ for(var i=0; i<text.length; i++){
 		// break;
 	}
 }
+
+for(var i=0; i<text.length; i++){
+	msg = text[i];	
+	process_stream(msg)
+}
+
+
 // Run LDA to get terms for 2 topics (5 terms each).
 // var result = process(documents, 2, 5);
 
