@@ -125,6 +125,19 @@ function softmin(arr, scale_idx, scale_factor) {
 	return sm;
 }
 
+function getMax(dist){
+	// console.log(dist);
+	var maxVal = Number.MIN_VALUE;
+	var term;
+	for(var k in dist){
+		if (dist[k] > maxVal){
+			maxVal = dist[k];
+			term = k;
+		}
+	}
+	return term;
+}
+
 function rest_state() {
 	context_win = 3;
 	topic_dists = []
@@ -157,7 +170,7 @@ function process_stream(msg){
 		if (topic_dists.length === 0) {
 			topic_dists.push(dist);
 			prev_topic = 0;
-			return 0;
+			return [0, getMax(topic_dists[0])];
 		}
 		else{
 			var divs = [];
@@ -177,17 +190,17 @@ function process_stream(msg){
 			if (min_div > 0.34){
 				topic_dists.push(dist)
 				prev_topic = topic_dists.length - 1;
-				return topic_dists.length - 1;
+				return [topic_dists.length - 1, getMax(topic_dists[topic_dists.length - 1])];
 			}
 			else{
 				sum(topic_dists[min_idx], 0.75, dist, 0.25);
 				prev_topic = min_idx;
-				return min_idx;
+				return [min_idx, getMax(topic_dists[min_idx])];
 			}			
 		}
 	}
 	else{
-		return -1;
+		return [-1, null];
 	}
 }
 
