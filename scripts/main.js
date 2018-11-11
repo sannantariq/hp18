@@ -145,12 +145,25 @@ function rest_state() {
 	messages = new Array();
 }
 
+function extendMessage(msg, n){
+	var split = msg.split(" ");
+	var terms = []
+	for(var i=0; i<split.length; i++){
+		var exp_terms = Word2VecUtils.findSimilarWords(n, split[i]);
+		for(var j=0; j < exp_terms.length; j++) terms.push(exp_terms[j][0]);
+	}
+	msg += terms.join(" ");
+	return msg;
+}
+
 function process_stream(msg){
 	// if(msg.split(" ").length < 3) return -1;
+	msg = extendMessage(msg, 5);
+	// console.log(msg);
 	messages.push(msg);
 	if (messages.length >= context_win){
 		ctx = messages.join('.');
-		console.log(ctx);
+		// console.log(ctx);
 		var result = process(messages, 2, 3);
 		console.log(result);	
 		messages.shift();
@@ -203,6 +216,8 @@ function process_stream(msg){
 		return [-1, null];
 	}
 }
+
+
 
 for(var i=0; i<text.length; i++){
 	msg = text[i];	
