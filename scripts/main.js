@@ -2,9 +2,22 @@
 
 // Example document.
 
-// var jensen_shannon(){
+function kl(a, b){
+	var div = 0;
+	for(var k in a){
+		var p = a[k];
+		if (k in b){
+			var q = b[k]
+			div -= p * math.log(q/p);
+		}
+	}
+	return div
+}
 
-// }
+function jensen_shannon(a, b){
+	return 0.5 * kl(a, b) + kl(b, a)
+}
+
 var text = [
 	"hi",
 	"hi",
@@ -38,6 +51,7 @@ for(var i=0; i<text.length; i++){
 		console.log(ctx);
 		var result = process(messages, 2, 3);
 		console.log(result);
+		console.log(kl(result[0], result[1]));
 		messages.shift();
 		// break;
 	}
